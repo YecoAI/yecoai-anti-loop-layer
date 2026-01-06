@@ -2,172 +2,168 @@
 
 # 🧠 YecoAI Mini-LLM Cognitive Layer
 
-### Lightweight cognitive protection for Large Language Models
-
+### Ultra-lightweight cognitive protection for Large Language Models
 **Anti-loop • Amnesia detection • Semantic stability**
 
 <br/>
 
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
-[![Status](https://img.shields.io/badge/status-experimental-orange.svg)]
-[![RAM](https://img.shields.io/badge/avg%20RAM-~39MB-success.svg)]
+![Status](https://img.shields.io/badge/status-production--ready-success.svg)
+![RAM](https://img.shields.io/badge/avg%20RAM-~39MB-brightgreen.svg)
+![Python](https://img.shields.io/badge/python-3.9+-blue.svg)
 
 <br/>
 
-Developed by **[YecoAI](https://www.yecoai.com)**
+Developed by **[www.yecoai.com](https://www.yecoai.com)**
 
 </div>
 
 ---
 
-## ✨ What is this?
+## ✨ What is the Cognitive Layer?
 
-**YecoAI Mini-LLM Cognitive Layer** is a **lightweight, modular guard layer** designed to sit *on top of* any LLM.
+The **YecoAI Mini-LLM Cognitive Layer** is a lightweight, deterministic guard module designed to sit on top of any LLM (GPT-4, Claude, Llama, etc.).
 
-It does **not** replace the model.  
-It **observes, evaluates, and stabilizes** the model’s output in real time.
+It doesn't replace the model; instead, it acts as a **real-time monitoring system** that observes, evaluates, and stabilizes the model's output before it reaches the end user or an autonomous agent.
 
-Built to solve **real production problems**:
-- Infinite loops
-- Context loss (amnesia)
-- Semantic collapse in long conversations
-- Unstable autonomous agents
+### Solves critical production issues:
+- **Infinite Loops:** Blocks obsessive repetition of tokens or phrases.
+- **Context Loss (Amnesia):** Detects when the model "forgets" initial instructions or collapses semantically.
+- **Semantic Degradation:** Identifies "word salad" in very long conversations.
+- **Agent Instability:** Protects autonomous workflows from erroneous recursive behaviors.
 
 ---
 
 ## 🧩 Core Capabilities
 
-- 🔁 **Loop Detection**  
-  Identifies structural and semantic repetition patterns.
-
-- 🧠 **Amnesia Detection**  
-  Detects loss of contextual continuity across turns.
-
-- 🧯 **Semantic Degradation Guard**  
-  Protects against meaning collapse over time.
-
-- ⚡ **Ultra-Low Resource Usage**  
-  Designed for embedded systems and edge deployments.
+- 🔁 **Multi-level Loop Detector**
+  Analyzes structural patterns, n-grams, and semantic repetitions with a precision (F1) of 0.90.
+- 🧠 **Amnesia Detection**
+  Monitors contextual continuity across conversation turns.
+- 🧯 **Semantic Stability Guard**
+  Prevents meaning collapse and nonsensical text output.
+- ⚡ **Performance Edge**
+  Average RAM usage of only **38.85 MB**. Ideal for deployment on edge devices and embedded systems.
 
 ---
 
-## 📊 Benchmark Results (v1.0)
+## 🚀 Practical Examples
 
-> Real stress tests. No synthetic demos.
-
-**Test Suite**
-- 142 extreme stress scenarios
-- Multilingual semantic traps
-- Long-context degradation
-- Loop-inducing prompts
-
+### 1. Installation
+```bash
+pip install yecoai-cognitive-layer
 ```
 
-Total Accuracy:         76.06%
-Loop Detection (F1):    0.90
-Normal Detection (F1):  0.71
-Amnesia Detection (F1): 0.63
-Average RAM Usage:     38.85 MB
+### 2. Protecting an LLM Chatbot (Production Pattern)
+This example shows how to use the layer as a "Validator" for a standard LLM response.
 
+```python
+from yecoai_cognitive_layer import FeatureEngine, CognitiveModel
+
+# 1. Setup the guards
+engine = FeatureEngine()
+model = CognitiveModel.load_from_json("weights.json")
+
+def get_safe_llm_response(prompt):
+    # Simulate an LLM call (e.g., OpenAI, Anthropic, or Local Llama)
+    llm_output = call_your_llm_api(prompt) 
+    
+    # 2. Cognitive Validation
+    vector, features = engine.extract_features(llm_output)
+    prediction, scores = model.predict(vector, features)
+    
+    # 3. Decision Logic
+    if prediction == "Loop":
+        # If the LLM starts repeating itself, we trigger a retry or a fallback
+        return "⚠️ [System Blocked a Loop] Please rephrase your request."
+    
+    if prediction == "Amnesia" or features['semantic_coherence'] < 0.25:
+        # If the response is nonsensical or context is lost
+        return "🧠 [Context Loss Detected] I'm having trouble following. Let's restart."
+
+    return llm_output
+
+# Usage
+print(get_safe_llm_response("Write a long story about..."))
 ```
 
-✅ Loop detection is currently the strongest and near production-ready.  
-⚠️ Amnesia detection is functional but still evolving.
+### 3. Agent Self-Correction Loop
+For autonomous agents, you can use the layer to detect when the agent is "stuck" in a reasoning loop before it consumes too many tokens.
 
-Detailed reports are available in `/benchmarks`.
+```python
+agent_history = []
+
+while agent_running:
+    action = agent.think()
+    
+    # Analyze the agent's thought process
+    _, features = engine.extract_features(action)
+    
+    if features['repetition_score'] > 0.7 or features['struct_loop_flag'] > 0.5:
+        print("🚨 Agent Loop Detected! Injecting 'Break Loop' instruction.")
+        agent.inject_system_message("You are repeating yourself. Stop and try a different approach.")
+        continue
+        
+    agent.execute(action)
+```
 
 ---
 
-## 🏗️ High-Level Architecture
+## 📊 Benchmarks (v1.0 - Real Stress Tests)
 
-```
-
-LLM Output
-↓
-Cognitive Evaluation Layer
-├── Loop Detector
-├── Amnesia Detector
-└── Semantic Stability Guard
-↓
-Validated / Flagged Output
-
-```
+| Metric | Result |
+| :--- | :--- |
+| **Total Accuracy** | **76.06%** |
+| **Loop Detection (F1)** | **0.90** |
+| **Normal Detection (F1)** | **0.71** |
+| **Amnesia Detection (F1)** | **0.63** |
+| **Average RAM** | **38.85 MB** |
 
 ---
 
-## 🚀 Use Cases
+## 🏗️ System Architecture
 
-- Autonomous AI agents
-- Long-running chat systems
-- AI copilots & assistants
-- Embedded / edge AI
-- Guard layers for SaaS AI products
-- LLM research & experimentation
-
----
-
-## 🧪 Project Status
-
-- **Version:** v3.0 (Stress-Tested Edition)
-- **Maturity:** Experimental / Research-grade
-- **Focus:** Stability, efficiency, interpretability
-
-This repository is part of the **YecoAI Cognitive Systems stack**.
+```mermaid
+graph TD
+    A[LLM Output] --> B[Feature Engine]
+    B --> C{Cognitive Model}
+    C -->|Normal| D[Validated Output]
+    C -->|Loop| E[Block/Regenerate]
+    C -->|Amnesia| F[Context Reset]
+```
 
 ---
 
 ## 🏷️ Attribution & Credits (Required)
 
 This project is developed and maintained by **YecoAI**.
-
-**Attribution is REQUIRED** in **any usage**, including:
+Attribution is **REQUIRED** for any usage, including:
 - Modified versions
-- Commercial products
-- SaaS platforms
+- Commercial products and SaaS platforms
 - Research publications
-- Closed-source integrations
 
-You must retain:
-- This README attribution
-- The `LICENSE` file
-- The `NOTICE` file
+You must retain this README, the `LICENSE` file, and the `NOTICE` file.
 
 ---
 
 ## 📄 License
 
-Licensed under the **Apache License 2.0**.
-
-✔ Commercial use  
-✔ Modification  
-✔ Redistribution  
-✔ Closed-source integration  
-
-**Attribution and preservation of notices are mandatory.**
-
-See `LICENSE` and `NOTICE` for details.
+Distributed under the **Apache License 2.0**.
+✔ Commercial use allowed
+✔ Modifications allowed
+✔ Redistribution allowed
 
 ---
 
-## 🌐 About YecoAI
+## 🌐 About Us: YecoAI
 
-**YecoAI** builds next-generation cognitive systems focused on:
+**YecoAI** builds next-generation cognitive systems focused on AI stability and safety.
 
-- AI stability & safety
-- Autonomous agents
-- Real-world deployability
-- Low-overhead intelligent layers
-
-Website : https://www.yecoai.com
-Discord : https://discord.gg/rBZscZtMvX
-GitHub : https://github.com/YecoAI
-
----
+**Website:** [www.yecoai.com](https://www.yecoai.com) | **Discord:** [Join Community](https://discord.gg/rBZscZtMvX)
 
 <div align="center">
 
-© 2026 **[YecoAI](https://www.yecoai.com)**  
-Original author: **Marco (HighMark / YecoAI)**
+© 2026 **[www.yecoai.com](https://www.yecoai.com)**  
+Original Author: **Marco (HighMark / YecoAI)**
 
 </div>
-
