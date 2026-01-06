@@ -1,5 +1,5 @@
 YecoAI Mini-LLM Cognitive Layer
-Copyright © 2025 YecoAI
+Copyright © 2026 YecoAI
 
 This project includes a cognitive protection layer for LLM systems
 (anti-loop, amnesia detection, semantic degradation guards).
