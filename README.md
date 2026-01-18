@@ -14,6 +14,8 @@
 
 <br/>
 
+<img width="1536" height="1024" alt="bannerYeco1" src="https://github.com/user-attachments/assets/dc299beb-8a23-41a7-9e0f-7e7f1f30f450" />
+
 Developed by **[www.yecoai.com](https://www.yecoai.com)**
 
 </div>
